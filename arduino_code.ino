@@ -28,7 +28,7 @@
 */
 
 /* Set the delay between fresh samples */
-uint16_t BNO055_SAMPLERATE_DELAY_MS = 100;
+uint16_t BNO055_SAMPLERATE_DELAY_MS = 50;
 
 // Check I2C device address and correct line below (by default address is 0x29 or 0x28)
 //                                   id, address
@@ -37,14 +37,14 @@ Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 void setup(void)
 {
   delay(1000);
-
+  
   Serial.begin(115200);
   Serial.println("Orientation Sensor Test"); Serial.println("");
 
   /* Initialise the sensor */
   if (!bno.begin())
   {
-
+    
     while (1) {
       /* There was a problem detecting the BNO055 ... check your connections */
       Serial.println("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
@@ -63,6 +63,6 @@ void loop(void)
   angle = orientationData.orientation.y;
 
   Serial.println(angle);
-
+  
   delay(BNO055_SAMPLERATE_DELAY_MS);
 }

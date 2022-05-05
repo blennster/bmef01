@@ -10,7 +10,7 @@ def clamp(n, smallest, largest):
     return max(smallest, min(n, largest))
 
 def init():
-    channel = dynamixel.channel.Channel(57600, device='/dev/ttyACM0')
+    channel = dynamixel.channel.Channel(57600, device='/dev/ttyACM1')
     servos = [
         XM430_W210_T_R(channel, 1),
         XM430_W210_T_R(channel, 2),
@@ -41,10 +41,10 @@ def run(channel, servos):
         s.torque_enable.write(1)
         s.profile_acceleration.write(0)
 
-    serialport = '/dev/ttyACM1'
+    serialport = '/dev/ttyACM0'
     baudrate = 115200
 
-    pid = PID(400, 0, 0, setpoint=0, sample_time=0.1)
+    pid = PID(100, 270, 0.2, setpoint=0, sample_time=0.05)
     ser = serial.Serial(serialport, baudrate)
 
     servs = np.array([1, 0,  -1])
@@ -71,9 +71,7 @@ def run(channel, servos):
             data = data - zero_offset
             pos_output = pid(data)
             print(f"Input: {data}, PID output: {pos_output}")
-            i += 1
-            if i % 1 == 0:
-                apply_speed(servos, clamp(pos_output, -1023, 1023) * servs )
+            apply_speed(servos, clamp(pos_output, -1023, 1023) * servs )
     except KeyboardInterrupt:
         apply_speed(servos, [0,0,0])
 
